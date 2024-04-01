@@ -3,44 +3,34 @@ package com.example.littlelemon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.MutableLiveData
 import com.example.littlelemon.ui.theme.LittleLemonTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val sharedPreferences by lazy {
+        getSharedPreferences("Little Lemon", MODE_PRIVATE)
+    }
+
+    private val isLogin = MutableLiveData<Boolean>()
+    private val firstName = MutableLiveData<String>()
+    private val lastName = MutableLiveData<String>()
+    private val email = MutableLiveData<String>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        isLogin.value = sharedPreferences.getBoolean("login", false)
+        firstName.value = sharedPreferences.getString("firstName", "")
+        lastName.value = sharedPreferences.getString("lastName", "")
+        email.value = sharedPreferences.getString("email", "")
+
         setContent {
             LittleLemonTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("World")
-                }
+                OnBoarding(isLogin, sharedPreferences, firstName, lastName, email)
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    LittleLemonTheme {
-        Greeting("Android")
-    }
-}
