@@ -1,10 +1,14 @@
 package com.example.littlelemon
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.MutableLiveData
-import com.example.littlelemon.ui.theme.LittleLemonTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
 
@@ -27,10 +31,31 @@ class MainActivity : ComponentActivity() {
         email.value = sharedPreferences.getString("email", "")
 
         setContent {
-            LittleLemonTheme {
-                OnBoarding(isLogin, sharedPreferences, firstName, lastName, email)
-            }
+//            LittleLemonTheme {
+//                OnBoarding(isLogin, sharedPreferences, firstName, lastName, email)
+//            }
+            MyNavigation(isLogin, sharedPreferences)
         }
     }
 }
 
+
+@Composable
+fun MyNavigation(
+    isLogin: MutableLiveData<Boolean>,
+    sharedPreferences: SharedPreferences,
+) {
+    val navController = rememberNavController()
+    val startDestinations = if (isLogin.value == true) Home.route else OnBoarding.route
+    NavHost(navController = navController, startDestination = startDestinations) {
+        composable(Home.route) {
+            Home()
+        }
+        composable(Profile.route) {
+            Profile()
+        }
+        composable(OnBoarding.route) {
+            OnBoarding(isLogin, sharedPreferences, navController )
+        }
+    }
+}
