@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavHostController
 
 @SuppressLint("CommitPrefEdits")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,12 +43,18 @@ import androidx.lifecycle.MutableLiveData
 fun OnBoarding(
     isLogin: MutableLiveData<Boolean>,
     sharedPreferences: SharedPreferences,
-    firstName: MutableLiveData<String>,
-    lastName: MutableLiveData<String>,
-    email: MutableLiveData<String>
+    navController: NavHostController
 ) {
     
-
+    var firstName by remember {
+        mutableStateOf("")
+    }
+    var lastName by remember {
+        mutableStateOf("")
+    }
+    var email by remember {
+        mutableStateOf("")
+    }
     
     Column (
         modifier = Modifier
@@ -84,9 +91,6 @@ fun OnBoarding(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 40.dp)
             )
-            val fname = firstName.observeAsState("")
-            val lname = lastName.observeAsState("")
-            val emailData = email.observeAsState("")
             OutlinedTextField(
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = LittleLemonColor.yellow,
@@ -95,13 +99,8 @@ fun OnBoarding(
                     unfocusedLabelColor = LittleLemonColor.primary
                 ),
                 textStyle = TextStyle(color = LittleLemonColor.primary),
-                value = fname.value,
-                onValueChange = {
-                                sharedPreferences.edit(commit = true){
-                                    putString("firstName", it)
-                                }
-                    firstName.value = it
-                },
+                value = firstName,
+                onValueChange = {firstName = it},
                 label = { Text(text = "First Name")},
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,12 +114,8 @@ fun OnBoarding(
                     unfocusedLabelColor = LittleLemonColor.primary
                 ),
                 textStyle = TextStyle(color = LittleLemonColor.primary),
-                value = lname.value,
-                onValueChange = {
-                    sharedPreferences.edit(commit = true){
-                        putString("lastName", it)
-                    }
-                    lastName.value = it },
+                value = lastName,
+                onValueChange = { lastName = it },
                 label = { Text(text = "Last Name")},
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,12 +129,8 @@ fun OnBoarding(
                     unfocusedLabelColor = LittleLemonColor.primary
                 ),
                 textStyle = TextStyle(color = LittleLemonColor.primary),
-                value = emailData.value,
-                onValueChange = {
-                    sharedPreferences.edit(commit = true){
-                        putString("email", it)
-                    }
-                    email.value = it },
+                value = email,
+                onValueChange = { email = it },
                 label = { Text(text = "Email")},
                 modifier = Modifier
                     .fillMaxWidth()
@@ -155,14 +146,21 @@ fun OnBoarding(
                 .padding(horizontal = 20.dp),
             onClick = {
                 if(isLogin.value == false) {
-                    val edit = sharedPreferences.edit()
-                    edit.apply{
-                        putBoolean("login", true)
-                        apply()
+                    if (firstName.isBlank() || lastName.isBlank() || email.isBlank()) {
+                        Toast.makeText(context, "Registration unsuccessful. Please enter all data.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        sharedPreferences.edit(commit = true) {
+                            putBoolean("login", true)
+                            putString("firstName", firstName)
+                            putString("lastName", lastName)
+                            putString("email", email)
+                        }
+                        Toast.makeText(context, "Registration successful!", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Home.route)
                     }
-                    Toast.makeText(context, "Successful!", Toast.LENGTH_SHORT).show()
+
                 } else {
-                    Toast.makeText(context, "Enter relevent data!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Already logged in!", Toast.LENGTH_SHORT).show()
                 }
             }
         ) {
