@@ -17,18 +17,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private val isLogin = MutableLiveData<Boolean>()
-    private val firstName = MutableLiveData<String>()
-    private val lastName = MutableLiveData<String>()
-    private val email = MutableLiveData<String>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         isLogin.value = sharedPreferences.getBoolean("login", false)
-        firstName.value = sharedPreferences.getString("firstName", "")
-        lastName.value = sharedPreferences.getString("lastName", "")
-        email.value = sharedPreferences.getString("email", "")
+
 
         setContent {
 //            LittleLemonTheme {
@@ -46,13 +41,13 @@ fun MyNavigation(
     sharedPreferences: SharedPreferences,
 ) {
     val navController = rememberNavController()
-    val startDestinations = if (isLogin.value == true) Home.route else OnBoarding.route
+    val startDestinations = if (isLogin.value == true) Profile.route else OnBoarding.route
     NavHost(navController = navController, startDestination = startDestinations) {
         composable(Home.route) {
             Home()
         }
         composable(Profile.route) {
-            Profile()
+            Profile(sharedPreferences, navController, isLogin)
         }
         composable(OnBoarding.route) {
             OnBoarding(isLogin, sharedPreferences, navController )
