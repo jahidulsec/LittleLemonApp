@@ -164,7 +164,7 @@ fun OnBoarding(
                 }
             }
         ) {
-            Text(text = "Register")
+            Text(text = "Register", color = LittleLemonColor.dark)
         }
     }
 }
