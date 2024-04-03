@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -66,9 +67,8 @@ fun OnBoarding(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
             modifier = Modifier
-                .fillMaxWidth(1f)
                 .padding(20.dp)
-                .height(40.dp)
+                .size(140.dp, 40.dp)
         )
         Text(
             text = "Let's get to know you",
