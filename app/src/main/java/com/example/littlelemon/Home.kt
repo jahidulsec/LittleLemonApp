@@ -15,7 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -30,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -81,7 +86,6 @@ fun Hero() {
 
     Column (
         modifier = Modifier
-            .fillMaxWidth(1f)
             .background(color = LittleLemonColor.primary)
             .padding(20.dp)
     ){
@@ -98,7 +102,7 @@ fun Hero() {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 30.dp)
+                .padding(bottom = 15.dp)
         ) {
             Column (
                 modifier = Modifier
@@ -114,7 +118,9 @@ fun Hero() {
                 painter = painterResource(id = R.drawable.hero_image),
                 contentDescription = "Hero Image",
                 contentScale = ContentScale.FillWidth,
-                modifier = Modifier.size(140.dp)
+                modifier = Modifier
+                    .size(140.dp)
+                    .clip(RoundedCornerShape(16.dp))
 
             )
         }
@@ -127,8 +133,6 @@ fun Hero() {
             placeholder = { Text(text = "Enter search phrase")},
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 20.dp)
-
         )
     }
 }
@@ -138,18 +142,29 @@ fun Hero() {
 fun MenuCat() {
     Column (
         modifier = Modifier
-            .padding(20.dp)
-            .border(1.dp, LittleLemonColor.dark)
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+            .drawBehind {
+                val borderSize = 1.dp.toPx()
+                drawLine(
+                    color = LittleLemonColor.primary,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = borderSize
+                )
+            }
     ) {
         Text(
             text = "ORDER FOR DELIVERY!",
             style = Type.sectionTitle,
             modifier = Modifier.padding(bottom=10.dp)
         )
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.1f)
+                .fillMaxHeight(0.15f)
+                .padding(bottom = 10.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             ButtonCat("Starters")
             ButtonCat("Mains")
@@ -169,9 +184,10 @@ fun ButtonCat(title:String) {
         style = Type.sectionCat,
         modifier = Modifier
             .padding(end = 20.dp)
+            .clip(RoundedCornerShape(16.dp))
             .background(LittleLemonColor.gray)
             .padding(5.dp)
-            .clip(RoundedCornerShape(20.dp))
+
 
     )
 }
@@ -194,10 +210,24 @@ fun MenuItems() {
 fun Card() {
     Row (
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 20.dp)
+            .drawBehind {
+                val borderSize = 1.dp.toPx()
+                drawLine(
+                    color = LittleLemonColor.gray,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = borderSize
+                )
+            }
     ) {
         Column (
-            modifier = Modifier.fillMaxWidth(0.75f)
+            modifier = Modifier
+                .fillMaxWidth(0.75f)
+                .padding(bottom = 10.dp)
+
         ) {
             Text(
                 text = "Greek Salad",
@@ -216,7 +246,7 @@ fun Card() {
         Image(
             painter = painterResource(id = R.drawable.greek_salad),
             contentDescription = "Greek Salad",
-            contentScale = ContentScale.FillHeight,
+            contentScale = ContentScale.Crop,
             modifier = Modifier.size(81.dp)
         )
     }
