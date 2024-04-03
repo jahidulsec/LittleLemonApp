@@ -1,13 +1,18 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
 package com.example.littlelemon
 
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,10 +26,14 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -67,6 +77,7 @@ fun Home() {
                 contentDescription = "User",
                 modifier = Modifier
                     .height(40.dp)
+                    .clip(shape = RoundedCornerShape(50.dp))
             )
         }
 
@@ -92,6 +103,7 @@ fun Hero() {
         Text(
             text = stringResource(id = R.string.title),
             style = Type.title,
+            modifier = Modifier.height(60.dp)
         )
         Text(
             text= stringResource(id = R.string.sub_title),
@@ -126,6 +138,9 @@ fun Hero() {
         }
         TextField(
             leadingIcon = {Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")},
+            colors = textFieldColors(
+                focusedIndicatorColor = Color(0x00ffffff)
+            ),
             value = search,
             onValueChange = {search = it},
             shape = RoundedCornerShape(10.dp),
@@ -138,8 +153,10 @@ fun Hero() {
 }
 
 
+
 @Composable
 fun MenuCat() {
+
     Column (
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp, top = 20.dp)
@@ -164,31 +181,38 @@ fun MenuCat() {
                 .fillMaxWidth()
                 .fillMaxHeight(0.15f)
                 .padding(bottom = 10.dp)
-                .verticalScroll(rememberScrollState())
+                .horizontalScroll(rememberScrollState())
         ) {
-            ButtonCat("Starters")
-            ButtonCat("Mains")
-            ButtonCat("Desserts")
-            ButtonCat("Slides")
-            ButtonCat("Starters")
-            ButtonCat("Starters")
+            var selected by remember {
+                mutableStateOf("")
+            }
+            ButtonCat("Starters", selected, onSelected = {selected = it})
+            ButtonCat("Mains", selected, onSelected = {selected = it})
+            ButtonCat("Desserts", selected, onSelected = {selected = it})
+            ButtonCat("Slides", selected, onSelected = {selected = it})
         }
     }
 }
 
 
 @Composable
-fun ButtonCat(title:String) {
+fun ButtonCat(title:String, selected:String, onSelected: (String) -> Unit) {
+
+    val backgroundColor = if (title == selected) LittleLemonColor.primary else LittleLemonColor.gray
+    val color = if (title == selected) LittleLemonColor.gray else LittleLemonColor.dark
+
     Text(
         text = title,
         style = Type.sectionCat,
+        color = color,
         modifier = Modifier
             .padding(end = 20.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(LittleLemonColor.gray)
-            .padding(5.dp)
-
-
+            .background(backgroundColor)
+            .padding(10.dp)
+            .clickable {
+                onSelected(title)
+            }
     )
 }
 
@@ -196,7 +220,9 @@ fun ButtonCat(title:String) {
 @Composable
 fun MenuItems() {
     Column (
-        modifier = Modifier.padding(20.dp)
+        modifier = Modifier
+            .padding(20.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Card()
         Card()

@@ -58,8 +58,9 @@ fun Profile(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
             modifier = Modifier
+                .fillMaxWidth(1f)
                 .padding(20.dp)
-                .size(140.dp, 40.dp)
+                .height(40.dp)
                 .clickable {
                     navController.navigate(Home.route)
                 }

@@ -39,7 +39,6 @@ object Type {
     val sectionCat = TextStyle(
         fontSize = 16.sp,
         fontFamily = FontFamily(Font(R.font.karla_extra_bold, FontWeight.ExtraBold)),
-        color = LittleLemonColor.dark,
     )
     val cardTitle = TextStyle(
         fontSize = 18.sp,
@@ -48,7 +47,7 @@ object Type {
     )
     val price = TextStyle(
         fontSize = 16.sp,
-        fontFamily = FontFamily(Font(R.font.markazi_text_medium, FontWeight.Medium)),
+        fontFamily = FontFamily(Font(R.font.karla_medium, FontWeight.Medium)),
         color = LittleLemonColor.dark,
     )
 }
