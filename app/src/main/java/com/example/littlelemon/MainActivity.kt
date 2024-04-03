@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
 //            LittleLemonTheme {
 //                OnBoarding(isLogin, sharedPreferences, firstName, lastName, email)
 //            }
+            
             MyNavigation(isLogin, sharedPreferences)
         }
     }
