@@ -36,7 +36,9 @@ class MainActivity : ComponentActivity() {
     }
 
     private val database by lazy {
-        Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database").build()
+        Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
 
