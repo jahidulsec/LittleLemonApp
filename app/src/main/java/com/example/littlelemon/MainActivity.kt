@@ -26,10 +26,6 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-//            LittleLemonTheme {
-//                OnBoarding(isLogin, sharedPreferences, firstName, lastName, email)
-//            }
-            
             MyNavigation(isLogin, sharedPreferences)
         }
     }
@@ -42,10 +38,10 @@ fun MyNavigation(
     sharedPreferences: SharedPreferences,
 ) {
     val navController = rememberNavController()
-    val startDestinations = if (isLogin.value == true) Profile.route else OnBoarding.route
+    val startDestinations = if (isLogin.value == true) Home.route else OnBoarding.route
     NavHost(navController = navController, startDestination = startDestinations) {
         composable(Home.route) {
-            Home()
+            Home(navController)
         }
         composable(Profile.route) {
             Profile(sharedPreferences, navController, isLogin)
