@@ -47,7 +47,7 @@ import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(navController: NavHostController, database: AppDatabase) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -78,120 +78,110 @@ fun Home(navController: NavHostController, database: AppDatabase) {
             )
         }
 
-        Hero()
-        MenuCat()
-        MenuItems(database)
-    }
-}
+        var search by remember {
+            mutableStateOf("")
+        }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Hero() {
-
-    var search by remember {
-        mutableStateOf("")
-    }
-
-    Column (
-        modifier = Modifier
-            .background(color = LittleLemonColor.primary)
-            .padding(20.dp)
-    ){
-        Text(
-            text = stringResource(id = R.string.title),
-            style = Type.title,
-            modifier = Modifier.height(60.dp)
-        )
-        Text(
-            text= stringResource(id = R.string.sub_title),
-            style = Type.subTitle
-        )
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Column (
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-        ) {
-            Column (
+                .background(color = LittleLemonColor.primary)
+                .padding(20.dp)
+        ){
+            Text(
+                text = stringResource(id = R.string.title),
+                style = Type.title,
+                modifier = Modifier.height(60.dp)
+            )
+            Text(
+                text= stringResource(id = R.string.sub_title),
+                style = Type.subTitle
+            )
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .fillMaxWidth(0.65f)
-            ){
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp)
+            ) {
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth(0.65f)
+                ){
 
-                Text(
-                    text= stringResource(id = R.string.desc),
-                    style = Type.desc
+                    Text(
+                        text= stringResource(id = R.string.desc),
+                        style = Type.desc
+                    )
+                }
+                Image(
+                    painter = painterResource(id = R.drawable.hero_image),
+                    contentDescription = "Hero Image",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .size(140.dp)
+                        .clip(RoundedCornerShape(16.dp))
+
                 )
             }
-            Image(
-                painter = painterResource(id = R.drawable.hero_image),
-                contentDescription = "Hero Image",
-                contentScale = ContentScale.FillWidth,
+            TextField(
+                leadingIcon = {Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")},
+                colors = textFieldColors(
+                    focusedIndicatorColor = Color(0x00ffffff),
+                    containerColor = LittleLemonColor.gray
+                ),
+                value = search,
+                onValueChange = {search = it},
+                shape = RoundedCornerShape(10.dp),
+                textStyle = Type.paragraph,
+                placeholder = { Text(text = "Enter search phrase")},
                 modifier = Modifier
-                    .size(140.dp)
-                    .clip(RoundedCornerShape(16.dp))
-
+                    .fillMaxWidth()
             )
         }
-        TextField(
-            leadingIcon = {Icon(imageVector = Icons.Filled.Search, contentDescription = "Search")},
-            colors = textFieldColors(
-                focusedIndicatorColor = Color(0x00ffffff),
-                containerColor = LittleLemonColor.gray
-            ),
-            value = search,
-            onValueChange = {search = it},
-            shape = RoundedCornerShape(10.dp),
-            textStyle = Type.paragraph,
-            placeholder = { Text(text = "Enter search phrase")},
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-    }
-}
 
-
-
-@Composable
-fun MenuCat() {
-
-    Column (
-        modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
-            .drawBehind {
-                val borderSize = 1.dp.toPx()
-                drawLine(
-                    color = LittleLemonColor.gray,
-                    start = Offset(0f, size.height),
-                    end = Offset(size.width, size.height),
-                    strokeWidth = borderSize
-                )
-            }
-    ) {
-        Text(
-            text = "ORDER FOR DELIVERY!",
-            style = Type.sectionTitle,
-            modifier = Modifier.padding(bottom=10.dp)
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.15f)
-                .padding(bottom = 10.dp)
-                .horizontalScroll(rememberScrollState())
-        ) {
-            var selected by remember {
-                mutableStateOf("")
-            }
-            ButtonCat("Starters", selected, onSelected = {selected = it})
-            ButtonCat("Mains", selected, onSelected = {selected = it})
-            ButtonCat("Desserts", selected, onSelected = {selected = it})
-            ButtonCat("Slides", selected, onSelected = {selected = it})
+        var selected by remember {
+            mutableStateOf("")
         }
+
+        Column (
+            modifier = Modifier
+                .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                .drawBehind {
+                    val borderSize = 1.dp.toPx()
+                    drawLine(
+                        color = LittleLemonColor.gray,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = borderSize
+                    )
+                }
+        ) {
+            Text(
+                text = "ORDER FOR DELIVERY!",
+                style = Type.sectionTitle,
+                modifier = Modifier.padding(bottom=10.dp)
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.15f)
+                    .padding(bottom = 10.dp)
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                ButtonCat("Starters", selected, onSelected = {selected = it})
+                ButtonCat("Mains", selected, onSelected = {selected = it})
+                ButtonCat("Desserts", selected, onSelected = {selected = it})
+                ButtonCat("Slides", selected, onSelected = {selected = it})
+            }
+        }
+
+        MenuItems(database, search, selected)
     }
 }
+
+
+
 
 
 @Composable
@@ -217,15 +207,23 @@ fun ButtonCat(title:String, selected:String, onSelected: (String) -> Unit) {
 
 
 @Composable
-fun MenuItems(database: AppDatabase) {
+fun MenuItems(database: AppDatabase, search: String, selected: String) {
     val items by database.menuItemDao().getAll().observeAsState(emptyList())
+
+    val menus: List<MenuItemRoom> = if (search.isNotEmpty()) {
+        items.filter { it.title.contains(search, ignoreCase = true) }
+    } else if (selected.isNotEmpty()){
+        items.filter { it.category == selected.lowercase() }
+    } else {
+        items
+    }
 
     Column (
         modifier = Modifier
             .padding(20.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        items.map { item ->
+        menus.map { item ->
             Card(item)
         }
     }
